@@ -17,8 +17,8 @@ def webhook():
     # 기본 응답 텍스트
     reply_text = f"'{user_message}'에 대한 응답을 준비 중이에요."
 
-    if user_message.startswith("닉네임"):
-        nickname = user_message.replace("닉네임 ", "").strip()
+    if user_message.startswith("정보"):
+        nickname = user_message.replace("정보 ", "").strip()
         encoded_nickname = quote(nickname)
         url = f"https://developer-lostark.game.onstove.com/characters/{encoded_nickname}/siblings"
 

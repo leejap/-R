@@ -30,9 +30,14 @@ def webhook():
         )
 
     if user_message.startswith("정보 "):
-     input_name = user_message.replace("정보 ", "").strip()
-     encoded_name = quote(input_name)
-     url = f"https://developer-lostark.game.onstove.com/characters/{encoded_name}/siblings"
+     parts = user_message.replace("정보", "").strip().split()
+    if len(parts) == 0:
+        reply_text = "⚠️ 캐릭터명을 입력해주세요."
+    else:
+        input_name = parts[0]
+        # 이하 기존 로직 유지
+        encoded_nickname = quote(input_name)
+        url = f"https://developer-lostark.game.onstove.com/characters/{encoded_nickname}/siblings"
 
     headers = {
         "accept": "application/json",

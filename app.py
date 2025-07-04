@@ -17,7 +17,7 @@ def webhook():
     # 기본 응답 텍스트
     reply_text = f"'{user_message}'에 대한 응답을 준비 중이에요."
 
-    if user_message.startswith("정보 ", ""):
+    if user_message.startswith("정보 ",):
         nickname = user_message.replace("정보 ", "").strip()
         encoded_nickname = quote(nickname)
         url = f"https://developer-lostark.game.onstove.com/characters/{encoded_nickname}/siblings"
@@ -25,7 +25,7 @@ def webhook():
         headers = {
              "accept": "application/json",
              "authorization": f"bearer {LOSTARK_API_KEY}"
-              }
+             }
 
         res = requests.get(url, headers=headers)
         print(f"응답 코드: {res.status_code}")

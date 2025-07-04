@@ -39,7 +39,10 @@ def webhook():
         "version": "2.0",
         "template": {
             "outputs": [
-                {"simpleText": {"text": reply_text}}
+                {"simpleText": {
+                    "text": reply_text
+                    }
+                    }
             ]
         }
     })

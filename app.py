@@ -40,12 +40,11 @@ def webhook():
         "template": {
             "outputs": [
                 {"simpleText": {
-                    "text": reply_text
-                    }
-                    }
+                    "text": reply_text}}
             ]
         }
-    })
+    }, ensure_ascii=False),
+    content_type='application/json; charset=utf-8'
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))

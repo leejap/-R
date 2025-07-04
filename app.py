@@ -14,7 +14,7 @@ LOSTARK_API_KEY = os.environ.get("LOSTARK_API_KEY")
 @app.route('/webhook', methods=["POST"])
 def webhook():
     req = request.get_json(force=True)
-    user_message = req.get('userRequest', {}).get('utterance', '')
+    user_message = req.get('userRequest', {}).get('utterance', '').strip()
 
     # 예: "닉네임 홍길동" 입력 시
     if user_message.startswith("닉네임 "):

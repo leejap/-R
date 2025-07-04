@@ -26,35 +26,49 @@ def webhook():
             "3️⃣ 특성 [닉네임] - 각인 및 스탯 정보\n"
             "4️⃣ 카드 [닉네임] - 카드 세트 정보\n"
             "5️⃣ 길드 [닉네임] - 길드 정보\n\n"
-            "예: 정보 자라나라로리"
+            "예: 정보 자라나라모리"
         )
 
-    if user_message.startswith("정보 ",):
-        nickname = user_message.replace("정보 ", "").strip()
-        encoded_nickname = quote(nickname)
-        url = f"https://developer-lostark.game.onstove.com/characters/{encoded_nickname}/siblings"
+    if user_message.startswith("정보 "):
+     input_name = user_message.replace("정보 ", "").strip()
+     encoded_name = quote(input_name)
+     url = f"https://developer-lostark.game.onstove.com/characters/{encoded_name}/siblings"
 
-        headers = {
-             "accept": "application/json",
-             "authorization": f"bearer {LOSTARK_API_KEY}"
-             }
+    headers = {
+        "accept": "application/json",
+        "authorization": f"bearer {LOSTARK_API_KEY}"
+    }
 
-        res = requests.get(url, headers=headers)
-        print(f"응답 코드: {res.status_code}")
-        print(f"응답 내용: {res.text}")
-        print(f"요청 URL: {url}")
+    res = requests.get(url, headers=headers)
+    print(f"응답 코드: {res.status_code}")
+    print(f"응답 내용: {res.text}")
+    print(f"요청 URL: {url}")
 
-        
-  
-        if res.status_code == 200:
-            try:
-                data = res.json()
-                character_list = [char['CharacterName'] for char in data]
-                reply_text = f"🌟 '{nickname}'의 원정대 캐릭터 목록: {', '.join(character_list)}"
-            except ValueError:
-                reply_text = f"⚠️ '{nickname}'의 JSON 데이터를 불러오는 데 실패했습니다."
-        else:
-            reply_text = f"⚠️ '{nickname}'에 대한 정보를 찾을 수 없습니다. 상태코드: {res.status_code}"
+    if res.status_code == 200:
+        try:
+            data = res.json()
+
+            # 입력한 캐릭터가 포함된 원정대인지 확인
+            found = False
+            for char in data:
+                if char["CharacterName"] == input_name:
+                    found = True
+                    break
+
+            if found:
+                representative = data[0]["CharacterName"]
+                character_list = [char["CharacterName"] for char in data]
+                reply_text = (
+                    f"🌟 '{representative}'의 원정대 캐릭터 목록:\n"
+                    f"{', '.join(character_list)}"
+                )
+            else:
+                reply_text = f"⚠️ '{input_name}'는 원정대에 속한 캐릭터가 아니에요."
+
+        except ValueError:
+            reply_text = f"⚠️ '{input_name}'의 JSON 데이터를 불러오는 데 실패했습니다."
+    else:
+        reply_text = f"⚠️ '{input_name}'에 대한 정보를 찾을 수 없습니다. 상태코드: {res.status_code}"
 
     response = {
         "version": "2.0",

@@ -11,7 +11,7 @@ def webhook():
     # 요청 데이터 수신
     body = request.get_json(force=True, silent=True)
     print(f"[{now}] 🔔 Webhook 호출됨")
-    print(f"[{now}] 📥 받은 요청: {body}")
+    print(f"[{now}] 📥 받은 요청: {body}",flush=True)
 
     # 사용자 발화 추출
     user_message = body.get('userRequest', {}).get('utterance', '없음')

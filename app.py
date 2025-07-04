@@ -30,7 +30,9 @@ def webhook():
         res = requests.get(url, headers=headers)
         print("응답 코드:", res.status_code)
         print("응답 내용:", res.text)
-
+        print("요청 URL:", url)
+        
+  
         if res.status_code == 200:
             try:
                 data = res.json()

@@ -12,15 +12,15 @@ LOSTARK_API_KEY = os.environ.get("LOSTARK_API_KEY")
 @app.route("/webhook", methods=["POST"])
 def webhook():
     req = request.get_json(force=True)
-    user_message = req.get('userRequest', {}).get('utterance', '')
+    user_message = req.get('userRequest', {}).get('utterance', '').strip()
 
-    # 기본 응답 텍스트
+    # 기본 응답
     reply_text = f"'{user_message}'에 대한 응답을 준비 중이에요."
 
-    # ✅ 도움말 명령어 처리
+    # ✅ 도움말 명령어
     if user_message in ["도움말", "명령어", "help"]:
         reply_text = (
-            "🧭 로아봇 명령어 안내\n\n"
+            "🧾 로아봇 명령어 안내\n\n"
             "1️⃣ 정보 [닉네임] - 캐릭터 원정대 목록 조회\n"
             "2️⃣ 장비 [닉네임] - 대표 캐릭터 장비 정보\n"
             "3️⃣ 특성 [닉네임] - 각인 및 스탯 정보\n"
@@ -29,53 +29,51 @@ def webhook():
             "예: 정보 자라나라모리"
         )
 
-    if user_message.startswith("정보 "):
-     parts = user_message.replace("정보", "").strip().split()
-    if len(parts) == 0:
-        reply_text = "⚠️ 캐릭터명을 입력해주세요."
-    else:
-        input_name = parts[0]
-        # 이하 기존 로직 유지
-        encoded_nickname = quote(input_name)
-        url = f"https://developer-lostark.game.onstove.com/characters/{encoded_nickname}/siblings"
+    # ✅ 정보 명령어
+    elif user_message.startswith("정보 "):
+        parts = user_message.replace("정보", "").strip().split()
 
-    headers = {
-        "accept": "application/json",
-        "authorization": f"bearer {LOSTARK_API_KEY}"
-    }
+        if len(parts) == 0:
+            reply_text = "⚠️ 캐릭터명을 입력해주세요. 예: 정보 닉네임"
+        else:
+            input_name = parts[0]
+            encoded_nickname = quote(input_name)
+            url = f"https://developer-lostark.game.onstove.com/characters/{encoded_nickname}/siblings"
 
-    res = requests.get(url, headers=headers)
-    print(f"응답 코드: {res.status_code}")
-    print(f"응답 내용: {res.text}")
-    print(f"요청 URL: {url}")
+            headers = {
+                "accept": "application/json",
+                "authorization": f"bearer {LOSTARK_API_KEY}"
+            }
 
-    if res.status_code == 200:
-        try:
-            data = res.json()
+            res = requests.get(url, headers=headers)
+            print(f"응답 코드: {res.status_code}")
+            print(f"응답 내용: {res.text}")
+            print(f"요청 URL: {url}")
 
-            # 입력한 캐릭터가 포함된 원정대인지 확인
-            found = False
-            for char in data:
-                if char["CharacterName"] == input_name:
-                    found = True
-                    break
+            if res.status_code == 200:
+                try:
+                    data = res.json()
+                    found = any(char["CharacterName"] == input_name for char in data)
 
-            if found:
-                representative = data[0]["CharacterName"]
-                character_list = [char["CharacterName"] for char in data]
-                reply_text = (
-                    f"🌟 '{representative}'의 원정대 캐릭터 목록:\n"
-                    f"{', '.join(character_list)}"
-                )
+                    if found:
+                        representative = data[0]["CharacterName"]
+                        character_list = [char["CharacterName"] for char in data]
+                        reply_text = (
+                            f"🌟 '{representative}'의 원정대 캐릭터 목록:\n"
+                            f"{', '.join(character_list)}"
+                        )
+                    else:
+                        reply_text = f"⚠️ '{input_name}'은(는) 원정대에 포함되지 않은 캐릭터예요."
+                except ValueError:
+                    reply_text = f"⚠️ '{input_name}'의 JSON 데이터를 파싱하지 못했어요."
             else:
-                reply_text = f"⚠️ '{input_name}'는 원정대에 속한 캐릭터가 아니에요."
+                reply_text = f"⚠️ '{input_name}'에 대한 정보를 찾을 수 없습니다. 상태코드: {res.status_code}"
 
-        except ValueError:
-            reply_text = f"⚠️ '{input_name}'의 JSON 데이터를 불러오는 데 실패했습니다."
+    # ✅ 기타 입력 처리
     else:
-        reply_text = f"⚠️ '{input_name}'에 대한 정보를 찾을 수 없습니다. 상태코드: {res.status_code}"
+        reply_text = "무엇을 원하시나요? 🤔\n명령어가 궁금하시다면 '도움말'이라고 입력해보세요!"
 
-    response = {
+    return jsonify({
         "version": "2.0",
         "template": {
             "outputs": [
@@ -86,8 +84,7 @@ def webhook():
                 }
             ]
         }
-    }
-    return jsonify(response)
+    })
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))

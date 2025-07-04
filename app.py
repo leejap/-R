@@ -1,6 +1,9 @@
 from dotenv import load_dotenv
 load_dotenv()
 
+from flask import Response
+import json
+
 import os
 import requests
 from flask import Flask, request, jsonify
@@ -35,7 +38,8 @@ def webhook():
     else:
         reply_text = f"'{user_message}'에 대한 응답 준비 중이에요."
 
-    return jsonify({
+    return Response(
+        json.dumps({
         "version": "2.0",
         "template": {
             "outputs": [
@@ -45,6 +49,7 @@ def webhook():
         }
     }, ensure_ascii=False),
     content_type='application/json; charset=utf-8'
+    )
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))

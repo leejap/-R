@@ -1,2 +1,1 @@
-web: node index.js
-
+web: python app.py

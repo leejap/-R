@@ -71,7 +71,7 @@ def character_info():
             )
                 
                 
-                for cname in sorted(server_dict[server]):
+                for cname in sorted_characters:
                     char_info = next((c for c in data if c["CharacterName"] == cname), None)
                     item_level = (
                         char_info.get("ItemAvgLevel","알 수 없음") 

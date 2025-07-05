@@ -49,7 +49,7 @@ def character_info():
             character_list = []
             for server in sorted(server_dict.keys()):
                 character_list.append(f"- {server} 서버")
-                for cname in server_dict[server]:
+                for cname in sorted(server_dict[server]):
                     char_info = next((c for c in data if c["CharacterName"] == cname), None)
                     item_level = char_info["ItemMaxLevel"] if char_info else "알 수 없음"
                     character_list.append(f"  · {cname} (Lv. {item_level})")   

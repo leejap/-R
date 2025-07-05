@@ -44,16 +44,16 @@ def character_info():
             for char in data:
                 server = char["ServerName"]
                 cname = char["CharacterName"]
-                ItemLv = char["템레벨 :"]
+                ItemMaxLv = char["템레벨 :"]
                 server_dict[server].append(cname)
 
             character_list = []
             for server in sorted(server_dict.keys()):
                 character_list.append(f"{server} 서버")
                 for cname in server_dict[server]:
-                    character_list.append(f" - {cname}")
-                    for ItemLv in cname_dict[cname]:
-                        character_list.append(f" - {ItemLv}")   
+                    char_info = next((c for c in data if c["CharacterName"] == cname), None)
+                    item_level = char_info["ItemMaxLevel"] if char_info else "알 수 없음"
+                    character_list.append(f"  · {cname} (Lv. {item_level})")   
 
             message = f"🌟 '{representative}'의 원정대 캐릭터 목록:\n" + "\n".join(character_list)
             return make_json({

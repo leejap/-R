@@ -98,6 +98,13 @@ def character_info():
 @app.route("/equipment", methods=["GET"])
 def character_equipment():
     name = request.args.get("name", "").strip()
+    
+    prefix_keywords = ["정보", "원정대", "부캐", "장비"]
+    for prefix in prefix_keywords:
+        if name.startswith(prefix + " "):
+            name = name[len(prefix):].strip()
+            break
+
     if not name:
         return make_json({"error": "❗ 닉네임을 입력해주세요."}, 400)
 

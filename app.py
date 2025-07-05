@@ -53,7 +53,7 @@ def character_info():
                 for cname in sorted(server_dict[server]):
                     char_info = next((c for c in data if c["CharacterName"] == cname), None)
                     item_level = (
-                        char_info.get("ItemMaxLevel","알 수 없음") 
+                        char_info.get("ItemAvgLevel","알 수 없음") 
                         if char_info and isinstance(char_info, dict)
                         else "알 수 없음"
                     )

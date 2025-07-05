@@ -55,8 +55,11 @@ def character_info():
                 server_dict[server].append(cname)
 
             character_list = []
-            
-            sorted_characters = sorted(
+
+            for server in sorted(server_dict.keys()):
+                character_list.append(f"- {server} 서버")
+                
+                sorted_characters = sorted(
                 server_dict[server],
                 key=lambda cname : float(
                     next(
@@ -66,9 +69,8 @@ def character_info():
                 ),
                 reverse=True  
             )
-
-            for server in sorted(server_dict.keys()):
-                character_list.append(f"- {server} 서버")
+                
+                
                 for cname in sorted(server_dict[server]):
                     char_info = next((c for c in data if c["CharacterName"] == cname), None)
                     item_level = (

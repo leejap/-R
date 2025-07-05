@@ -22,7 +22,7 @@ def character_info():
     for keyword in prefix_keywords:
         if raw_query.startswith(keyword + " "):
             name = raw_query[len(keyword):].strip()
-        break
+            break
     else:
         name = raw_query
     if not name:

@@ -44,7 +44,7 @@ def character_info():
             for char in data:
                 server = char["ServerName"]
                 cname = char["CharacterName"]
-                ItemMaxLv = char["템레벨 :"]
+                item_level = char["ItemMaxLv :"]
                 server_dict[server].append(cname)
 
             character_list = []

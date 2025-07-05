@@ -47,6 +47,7 @@ def character_info():
                 server_dict[server].append(cname)
 
             character_list = []
+            
             for server in sorted(server_dict.keys()):
                 character_list.append(f"- {server} 서버")
                 for cname in sorted(server_dict[server]):

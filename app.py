@@ -55,6 +55,17 @@ def character_info():
                 server_dict[server].append(cname)
 
             character_list = []
+            
+            sorted_characters = sorted(
+                server_dict[server],
+                key=lambda cname : float(
+                    next(
+                       (c.get("ItemAvgLevel", "0") for c in data if c["CharacterName"] == cname),
+                        "0"
+                    ).replace(",", "")
+                ),
+                reverse=True  
+            )
 
             for server in sorted(server_dict.keys()):
                 character_list.append(f"- {server} 서버")

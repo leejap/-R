@@ -4,6 +4,8 @@ import os
 import requests
 from urllib.parse import quote
 import json
+from collections import defaultdict  
+
 
 # .env 파일에서 API 키 불러오기
 load_dotenv()
@@ -37,10 +39,17 @@ def character_info():
 
         if found:
             representative = name  # 사용자가 입력한 캐릭터명을 기준으로 표시
-            character_list = [
-               f"- {char['ServerName']} ({char['CharacterName']})"
-                              for char in data
-             ]
+            server_dict = defaultdict(list)
+            for char in data:
+             server = char["ServerName"]
+            cname = char["CharacterName"]
+            server_dict[server].append(cname)
+            character_list = []
+            for server in sorted(server_dict.keys()):
+                   character_list.append(f"- {server} 서버")
+                   for cname in server_dict[server]:
+                       character_list.append(f"  · {cname}")
+             
             message = f"🌟 '{representative}'의 원정대 캐릭터 목록:\n" + "\n".join(character_list)
             return make_json({
                 "name": representative,

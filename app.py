@@ -37,8 +37,10 @@ def character_info():
 
         if found:
             representative = name  # 사용자가 입력한 캐릭터명을 기준으로 표시
-            character_list = [char["CharacterName"] for char in data]
-            message = f"🌟 '{representative}'의 원정대 캐릭터 목록:\n" + ", ".join(character_list)
+            character_list = [(char['ServerName']) ({char["CharacterName"] })
+                              for char in data
+                              ]
+            message = f"🌟 '{representative}'의 원정대 캐릭터 목록:\n" + "\n".join(character_list)
             return make_json({
                 "name": representative,
                 "characters": character_list,

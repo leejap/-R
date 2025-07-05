@@ -15,8 +15,16 @@ LOSTARK_API_KEY = os.environ.get("LOSTARK_API_KEY")  # .env 파일에 있어야 
 
 @app.route("/character", methods=["GET"])
 def character_info():
-    name = request.args.get("name", "").strip()
+    raw_query = request.args.get("name", "").strip()
 
+    prefix_keywords = ["원정대","부캐"]
+
+    for keywords in prefix_keywords:
+        if raw_query.startswith(keyword + " "):
+            name = raw_query[len(keyword):].strip()
+        break
+    else:
+        name = raw_query
     if not name:
         return make_json({"error": "❗ 닉네임을 입력해주세요."}, 400)
 

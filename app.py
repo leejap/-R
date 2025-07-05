@@ -57,7 +57,10 @@ def character_info():
                         if char_info and isinstance(char_info, dict)
                         else "알 수 없음"
                     )
-                    character_list.append(f"  · {cname} (Lv. {item_level})")   
+                    character_list.append(f"  · {cname} (Lv. {item_level})")
+
+            print(f"[디버깅] char_info for {cname}: {char_info}")
+           
 
             message = f"🌟 '{representative}'의 원정대 캐릭터 목록:\n" + "\n".join(character_list)
             return make_json({

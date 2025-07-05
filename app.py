@@ -19,9 +19,13 @@ def character_info():
 
     prefix_keywords = ["원정대", "부캐"]
 
+    is_sibling = False
+    name = raw_query
+
     for keyword in prefix_keywords:
         if raw_query.startswith(keyword + " "):
             name = raw_query[len(keyword):].strip()
+            is_sibling = True
             break
     else:
         name = raw_query
@@ -29,12 +33,32 @@ def character_info():
         return make_json({"error": "❗ 닉네임을 입력해주세요."}, 400)
 
     encoded_name = quote(name)
-    url = f"https://developer-lostark.game.onstove.com/characters/{encoded_name}/siblings"
+    if is_sibling:
+         # ✅ 원정대 목록 URL
+       url = f"https://developer-lostark.game.onstove.com/characters/{encoded_name}/siblings"
+    else:
+        # ✅ 단일 캐릭터 정보 URL
+        url = f"https://developer-lostark.game.onstove.com/characters/{encoded_name}"
+
 
     headers = {
         "accept": "application/json",
         "authorization": f"bearer {LOSTARK_API_KEY}"
     }
+
+    try:
+        res = requests.get(url, headers=headers)
+        data = res.json()
+
+        if is_sibling:
+            # ✅ 원정대 목록 출력
+            return make_json(get_sibling_message(name, data))
+        else:
+            # ✅ 캐릭터 상세 정보 출력
+            return make_json(get_character_detail_message(data))
+    except Exception as e:
+        return make_json({"error": f"❗ API 요청 오류: {str(e)}"}, 500)
+
 
     res = requests.get(url, headers=headers)
 
@@ -170,6 +194,45 @@ def character_equipment():
 
     except Exception as e:
         return make_json({"error": f"❗ 서버 오류: {str(e)}"}, 500)
+
+def get_sibling_message(rep_name, data):
+    from collections import defaultdict
+
+    server_dict = defaultdict(list)
+
+    for char in data:
+        server = char["ServerName"]
+        server_dict[server].append(char)
+
+    result = f"✳ '{rep_name}'의 원정대 캐릭터 목록:\n"
+    for server, char_list in server_dict.items():
+        result += f"\n- {server} 서버\n"
+        # 평균 레벨 기준 내림차순 정렬
+        sorted_chars = sorted(
+            char_list,
+            key=lambda c: float(c["ItemAvgLevel"].replace(",", "")),
+            reverse=True
+        )
+        for c in sorted_chars:
+            result += f"· {c['CharacterName']} (Lv. {c['ItemAvgLevel']})\n"
+
+    return {"message": result}
+
+
+
+def get_character_detail_message(data):
+    return {
+        "message": (
+            f"📌 캐릭터명: {data['CharacterName']}\n"
+            f"칭호: {data.get('Title', '-')}\n"
+            f"서버: {data['ServerName']}\n"
+            f"직업: {data['CharacterClassName']}\n"
+            f"길드: {data.get('GuildName', '-')}\n"
+            f"아이템 레벨: {data.get('ItemAvgLevel', '-')}\n"
+            f"전투 레벨: {data.get('CharacterLevel', '-')}\n"
+        )
+    }
+
 
 # ✅ JSON 한글 깨짐 방지용 헬퍼 함수
 def make_json(data, status_code=200):

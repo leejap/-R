@@ -56,73 +56,17 @@ def character_info():
         else:
             # ✅ 캐릭터 상세 정보 출력
             return make_json(get_character_detail_message(data))
-    except Exception as e:
+    except requests.exceptions.RequestException as e:
         return make_json({"error": f"❗ API 요청 오류: {str(e)}"}, 500)
 
-
-    res = requests.get(url, headers=headers)
-
-    if res.status_code != 200:
-        return make_json({"error": f"❗ '{name}'을(를) 찾을 수 없습니다."}, 404)
-
-    try:
-        data = res.json()
-        found = any(char["CharacterName"] == name for char in data)
-
-        if found:
-            representative = name  # 사용자가 입력한 캐릭터명을 기준으로 표시
-
-            server_dict = defaultdict(list)
-            for char in data:
-                server = char["ServerName"]
-                cname = char["CharacterName"]
-                server_dict[server].append(cname)
-
-            character_list = []
-
-            for server in sorted(server_dict.keys()):
-                character_list.append(f"- {server} 서버")
-                
-                sorted_characters = sorted(
-                server_dict[server],
-                key=lambda cname : float(
-                    next(
-                       (c.get("ItemAvgLevel", "0") for c in data if c["CharacterName"] == cname),
-                        "0"
-                    ).replace(",", "")
-                ),
-                reverse=True  
-            )
-                
-                
-                for cname in sorted_characters:
-                    char_info = next((c for c in data if c["CharacterName"] == cname), None)
-                    item_level = (
-                        char_info.get("ItemAvgLevel","알 수 없음") 
-                        if char_info and isinstance(char_info, dict)
-                        else "알 수 없음"
-                    )
-                    character_list.append(f"  · {cname} (Lv. {item_level})")
-
-            print(f"[디버깅] char_info for {cname}: {char_info}")
-           
-
-            message = f"🌟 '{representative}'의 원정대 캐릭터 목록:\n" + "\n".join(character_list)
-            return make_json({
-                "name": representative,
-                "characters": character_list,
-                "message": message
-            })
-        else:
-            return make_json({"error": f"❗ '{name}'은(는) 원정대에 포함되지 않은 캐릭터입니다."}, 404)
-
-    except Exception as e:
+    except ValueError as e:
         return make_json({"error": f"❗ JSON 파싱 실패: {str(e)}"}, 500)
 
 @app.route("/equipment", methods=["GET"])
 def character_equipment():
     name = request.args.get("name", "").strip()
     
+
     prefix_keywords = ["정보", "원정대", "부캐", "장비"]
     for prefix in prefix_keywords:
         if name.startswith(prefix + " "):
@@ -178,9 +122,13 @@ def character_equipment():
             total_elixir += int(e['Level'])
             if e['SetName']:
                 set_names.append(e['SetName'])
+
         message += f"\n엘릭서 합계 : {total_elixir}\n"
-        if set_names:
-            message += f"엘릭서 세트 : {set_names[0]} (2단계)\n"  # 예시
+        
+        if set_names :
+            set_name = set_names[0]
+            set_level = elixir_data[0].get("SetLevel", "2단계")  # 없으면 기본값
+        message += f"엘릭서 세트 : {set_names[0]} ({set_level})\n"
 
         # 3. 초월
         message += "\n<초월 현황>\n"
@@ -230,6 +178,8 @@ def get_character_detail_message(data):
             f"길드: {data.get('GuildName', '-')}\n"
             f"아이템 레벨: {data.get('ItemAvgLevel', '-')}\n"
             f"전투 레벨: {data.get('CharacterLevel', '-')}\n"
+            f"영지: {data.get('TownName', '-')}\n"
+            f"PVP 등급: {data.get('PvpGradeName', '-')}\n"
         )
     }
 

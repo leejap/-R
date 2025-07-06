@@ -125,6 +125,8 @@ def character_equipment():
 
         message += f"\n엘릭서 합계 : {total_elixir}\n"
         
+        set_name = "-"
+        set_level = "-"
         if set_names :
             set_name = set_names[0]
             set_level = elixir_data[0].get("SetLevel", "2단계")  # 없으면 기본값

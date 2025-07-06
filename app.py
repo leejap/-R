@@ -33,12 +33,15 @@ def character_info():
         return make_json({"error": "❗ 닉네임을 입력해주세요."}, 400)
 
     encoded_name = quote(name)
+
     if is_sibling:
          # ✅ 원정대 목록 URL
-        url = f"https://developer-lostark.game.onstove.com/characters/{encoded_name}/siblings"
-    else:
+        url = (
+            f"https://developer-lostark.game.onstove.com/characters/{encoded_name}/siblings"
+            if is_sibling
+            else f"https://developer-lostark.game.onstove.com/characters/{encoded_name}"
         # ✅ 단일 캐릭터 정보 URL
-        url = f"https://developer-lostark.game.onstove.com/characters/{encoded_name}"
+        )
 
 
     headers = {
@@ -48,7 +51,14 @@ def character_info():
 
     try:
         res = requests.get(url, headers=headers)
-        data = res.json()
+        
+        if res.status_code != 200:
+            return make_json({"error": f"❌ {name}의 정보를 불러올 수 없습니다."}, 404)
+
+        try :
+             data = res.json()
+        except Exception as e:
+            return make_json({"error": f"❗ JSON 파싱 오류: {str(e)}"}, 500)     
         print(f"[DEBUG] API 요청 URL: {url}")  # ✅ URL 확인
         print(f"[DEBUG] 상태 코드: {res.status_code}")
         print(f"[DEBUG] 응답 본문: {res.text}")
@@ -60,6 +70,9 @@ def character_info():
         else:
             # ✅ 캐릭터 상세 정보 출력
             return make_json(get_character_detail_message(data))
+
+    except Exception as e:
+            return make_json({"error": f"❗ 서버 오류: {str(e)}"}, 500)
         
     except requests.exceptions.RequestException as e:
         print(f"[ERROR] RequestException: {e}")

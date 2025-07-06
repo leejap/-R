@@ -25,17 +25,17 @@ def character_info():
     for keyword in prefix_keywords:
         if raw_query.startswith(keyword + " "):
             name = raw_query[len(keyword):].strip()
+            if keyword in ["원정대", "부캐"]:  # ✅ 원정대나 부캐일 때만 true
             is_sibling = True
             break
-    else:
-        name = raw_query
+
     if not name:
         return make_json({"error": "❗ 닉네임을 입력해주세요."}, 400)
 
     encoded_name = quote(name)
     if is_sibling:
          # ✅ 원정대 목록 URL
-       url = f"https://developer-lostark.game.onstove.com/characters/{encoded_name}/siblings"
+        url = f"https://developer-lostark.game.onstove.com/characters/{encoded_name}/siblings"
     else:
         # ✅ 단일 캐릭터 정보 URL
         url = f"https://developer-lostark.game.onstove.com/characters/{encoded_name}"
@@ -56,6 +56,7 @@ def character_info():
         else:
             # ✅ 캐릭터 상세 정보 출력
             return make_json(get_character_detail_message(data))
+        
     except requests.exceptions.RequestException as e:
         return make_json({"error": f"❗ API 요청 오류: {str(e)}"}, 500)
 

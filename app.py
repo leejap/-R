@@ -17,7 +17,7 @@ LOSTARK_API_KEY = os.environ.get("LOSTARK_API_KEY")  # .env 파일에 있어야 
 def character_info():
     raw_query = request.args.get("name", "").strip()
 
-    prefix_keywords = ["원정대", "부캐"]
+    prefix_keywords = ["정보", "원정대", "부캐"]
 
     is_sibling = False
     name = raw_query

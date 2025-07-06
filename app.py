@@ -49,6 +49,10 @@ def character_info():
     try:
         res = requests.get(url, headers=headers)
         data = res.json()
+        print(f"[DEBUG] API 요청 URL: {url}")  # ✅ URL 확인
+        print(f"[DEBUG] 상태 코드: {res.status_code}")
+        print(f"[DEBUG] 응답 본문: {res.text}")
+
 
         if is_sibling:
             # ✅ 원정대 목록 출력
@@ -58,9 +62,11 @@ def character_info():
             return make_json(get_character_detail_message(data))
         
     except requests.exceptions.RequestException as e:
+        print(f"[ERROR] RequestException: {e}")
         return make_json({"error": f"❗ API 요청 오류: {str(e)}"}, 500)
 
     except ValueError as e:
+        print(f"[ERROR] JSON 파싱 오류: {e}")
         return make_json({"error": f"❗ JSON 파싱 실패: {str(e)}"}, 500)
 
 @app.route("/equipment", methods=["GET"])

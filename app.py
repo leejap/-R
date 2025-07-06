@@ -84,17 +84,17 @@ def character_equipment():
             grade = item.get("Grade", "")
             part = item.get("Type", "")
             level = item.get("Enhancement", "")
-            Tooltip = item.get("TooltipValue", 0)
-            refine = item.get("TinkerLevel", "10단계")
-            message += f"[{grade} {part}] +{level} / 품질 : {Tooltip} / 상급재련 : {refine}\n"
+            quality = item.get("QualityValue", "")
+            refine = item.get("TinkerLevel", " 단계")
+            message += f"[{grade} {part}] +{level} / 품질 : {quality} / 상급재련 : {refine}\n"
 
             if "무기" in part or "투구" in part or "상의" in part or "하의" in part or "장갑" in part or "어깨" in part:
-                total_Tooltip += Tooltip
+                total_quality += quality
                 count += 1
 
         if count:
-            avg_Tooltip = round(total_Tooltip / count)
-            message += f"\n평균 품질 : {avg_Tooltip}\n"
+            avg_quality = round(total_quality / count)
+            message += f"\n평균 품질 : {avg_quality}\n"
 
         # ✅ 이어서 엘릭서/초월 출력 (원하는 경우 별도 API로 호출 필요)
 

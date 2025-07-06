@@ -125,12 +125,14 @@ def character_equipment():
 
         message += f"\n엘릭서 합계 : {total_elixir}\n"
         
-        set_name = "-"
-        set_level = "-"
-        if set_names :
-            set_name = set_names[0]
-            set_level = elixir_data[0].get("SetLevel", "2단계")  # 없으면 기본값
-        message += f"엘릭서 세트 : {set_names[0]} ({set_level})\n"
+        if set_names:
+           set_name = set_names[0]
+           set_level = elixir_data[0].get("SetLevel", "2단계")
+        else:
+            set_name = "-"
+            set_level = "-"
+        message += f"엘릭서 세트 : {set_name} ({set_level})\n"
+
 
         # 3. 초월
         message += "\n<초월 현황>\n"

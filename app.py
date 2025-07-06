@@ -26,7 +26,7 @@ def character_info():
         if raw_query.startswith(keyword + " "):
             name = raw_query[len(keyword):].strip()
             if keyword in ["원정대", "부캐"]:  # ✅ 원정대나 부캐일 때만 true
-            is_sibling = True
+                 is_sibling = True
             break
 
     if not name:

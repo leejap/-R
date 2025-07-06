@@ -84,8 +84,8 @@ def character_equipment():
             grade = item.get("Grade", "")
             part = item.get("Type", "")
             level = item.get("Enhancement", "")
-            quality = item.get("QualityValue", "")
-            refine = item.get("TinkerLevel", " 단계")
+            quality = item.get("quality", 0)
+            refine = item.get("TinkerLevel", "10단계")
             message += f"[{grade} {part}] +{level} / 품질 : {quality} / 상급재련 : {refine}\n"
 
             if "무기" in part or "투구" in part or "상의" in part or "하의" in part or "장갑" in part or "어깨" in part:

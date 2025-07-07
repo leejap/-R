@@ -86,8 +86,12 @@ def character_equipment():
             Value = item.get("Element", "")
             quality = item.get("qualityValue", 0)
             refine = item.get("TinkerLevel", "10단계")
+            name = item.get("Name", "")
 
-            message += f"[{grade} {part}] +{Value} / 품질 : {quality} / 상급재련 : {refine}\n"
+            if "+" in name:
+                Value = "+" + name.split("+")[1].split()[0]
+
+            message += f"[{grade} {part}] +{Value} {name} / 품질 : {quality} / 상급재련 : {refine}\n"
 
 
             if part in["무기", "투구", "상의", "하의", "장갑", "어깨"]:

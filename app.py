@@ -84,7 +84,7 @@ def character_equipment():
             grade = item.get("Grade", "")
             part = item.get("Type", "")
             Value = item.get("Element", "")
-            quality = item.get("qualityValue", "" )
+            quality = item.get("qualityValue", '0')
             refine = item.get("TinkerLevel", "10단계")
             message += f"[{grade} {part}] +{Value} / 품질 : {quality} / 상급재련 : {refine}\n"
 

@@ -84,14 +84,21 @@ def character_equipment():
             grade = item.get("Grade", "")
             part = item.get("Type", "")
             level = item.get("Enhancement", "")
-            quality = item.get("Quality", 0 )
+            quality = item.get("qualityValue",  )
             refine = item.get("TinkerLevel", "10단계")
+            item_name = item.get("Name", "")
+
+            # 무기, 방어구, 악세등 +강화 숫자 추출
+            if "+" in item_name:
+                level = "+" + item_name.split("+")[1].split()[0]
+
+
             message += f"[{grade} {part}] +{level} / 품질 : {quality} / 상급재련 : {refine}\n"
 
             if "무기" in part or "투구" in part or "상의" in part or "하의" in part or "장갑" in part or "어깨" in part:
                 total_quality += quality
                 count += 1
-
+                
         if count:
             avg_quality = round(total_quality / count)
             message += f"\n평균 품질 : {avg_quality}\n"

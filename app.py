@@ -82,14 +82,16 @@ def character_equipment():
 
         for item in equip_data:
             grade = item.get("Grade", "")
-            part = item.get("Type", "")            
-            quality = item.get("qualityValue", "" , 0)
+            part = item.get("Type", "")
+            
+            quality = item.get("qualityValue", 0)
             refine = item.get("TinkerLevel", "10단계")
             name = item.get("Name", "")
 
-            
+            if "+" in name:
+                Value = "+" + name.split("+")[1].split()[0]
 
-            message += f"[{grade} {part}] +{name} / 품질 : {quality} / 상급재련 : {refine}\n"
+            message += f"[{grade} {part}] + {name} / 품질 : {quality} / 상급재련 : {refine}\n"
 
 
             if part in["무기", "투구", "상의", "하의", "장갑", "어깨"]:

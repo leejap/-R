@@ -73,6 +73,10 @@ def character_equipment():
             return jsonify({"error": f"❗{name}님의 장비 정보를 불러올 수 없습니다."}), 404
 
         equip_data = res.json()
+        print("🧾 [장비 전체 응답 JSON] ↓↓↓")
+        import json
+        print(json.dumps(equip_data, indent=2, ensure_ascii=False))  # 한글 포함 이쁘게 출력
+
         if not equip_data:
             return jsonify({"message": f"'{name}'님의 장비 정보가 없습니다."})
 

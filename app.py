@@ -59,9 +59,7 @@ def character_info():
 
 @app.route("/equipment", methods=["GET"])
 def character_equipment():
- def extract_effects(tooltip_str):
-    elixir = "없음"
-    transcendence = "없음"
+    
     try:
         raw_query = request.args.get("name", "").strip()
         if not raw_query:
@@ -87,7 +85,6 @@ def character_equipment():
         message = f"[{name}]님에 대한 장비 정보\n\n"
         total_quality = 0
         count = 0
-        
 
         for item in equip_data:
             grade = item.get("Grade", "")
@@ -100,7 +97,7 @@ def character_equipment():
             #엘릭서,초월 출력
             tooltip_str = item.get("Tooltip", "")
             elixir, transcendence = extract_effects(tooltip_str)
-           
+            extract_effects = ()
 
             if "+" in name:
                 Value = "+" + name.split("+")[1].split()[0]

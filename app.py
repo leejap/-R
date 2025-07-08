@@ -2,7 +2,6 @@ from flask import Flask, request, jsonify
 import os
 import requests
 from urllib.parse import quote
-from html import unescape
 
 app = Flask(__name__)
 
@@ -59,7 +58,6 @@ def character_info():
 
 @app.route("/equipment", methods=["GET"])
 def character_equipment():
-    
     try:
         raw_query = request.args.get("name", "").strip()
         if not raw_query:
@@ -88,23 +86,15 @@ def character_equipment():
 
         for item in equip_data:
             grade = item.get("Grade", "")
-            part = item.get("Type", "")    
-            #품질 출력        
+            part = item.get("Type", "")            
             qualityValue = item.get("Quality", 0)
-            #상급재련 출력
-            refine = item.get("Element_005", "10단계")
+            refine = item.get("TinkerLevel", "10단계")
             name = item.get("Name", "")
-            #엘릭서,초월 출력
-            tooltip_str = item.get("Tooltip", "")
-            elixir, transcendence = extract_effects(tooltip_str)
-            extract_effects = ()
 
             if "+" in name:
                 Value = "+" + name.split("+")[1].split()[0]
 
             message += f"[{grade} {part}] {name} / 품질 : {qualityValue} / 상급재련 : {refine}\n"
-            message += f"├ 엘릭서 : {elixir}\n"
-            message += f"└ 초월   : {transcendence}\n\n"
 
 
             if part in["무기", "투구", "상의", "하의", "장갑", "어깨"]:

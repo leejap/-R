@@ -91,8 +91,6 @@ def character_equipment():
             refine = item.get("TinkerLevel", "10단계")
             name = item.get("Name", "")
 
-            if "+" in name:
-                Value = "+" + name.split("+")[1].split()[0]
 
             message += f"[{grade} {part}] {name} / 품질 : {qualityValue} / 상급재련 : {refine}\n"
 

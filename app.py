@@ -88,7 +88,7 @@ def character_equipment():
             grade = item.get("Grade", "")
             part = item.get("Type", "")            
             qualityValue = item.get("Quality", 0)
-            refine = item.get("[상급재련]", "10단계")
+            refine = item.get("TinkerLevel", "10단계")
             name = item.get("Name", "")
 
 

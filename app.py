@@ -25,25 +25,8 @@ def parse_tooltip_effects(tooltip_str):
         if isinstance(element_001.get("value"), dict):
             quality = int(element_001["value"].get("qualityValue", 0))
         
-        # 상급 재련
-        refine_text = tooltip.get("Element_005", {}).get("value", "")
-        refine_match = re.search(r">(\d{1,2})<", refine_text)
-        refine = refine_match.group(1) + "단계" if refine_match else "-"
 
-        # 초월
-        transcend = tooltip.get("Element_010", {}).get("value", {}).get("Element_000", {}).get("topStr", "")
-        transcend = re.sub(r"<.*?>", "", transcend).strip() if transcend else "-"
-
-        # 엘릭서
-        elixir_block = tooltip.get("Element_011", {}).get("value", {}).get("Element_000", {}).get("contentStr", {})
-        elixirs = []
-        for val in elixir_block.values():
-            line = re.sub(r"<.*?>", "", val.get("contentStr", ""))
-            if line:
-                elixirs.append(line.strip())
-        elixir = " / ".join(elixirs) if elixirs else "-"
-
-        return quality, refine, elixir, transcend
+        return quality 
     except Exception as e:
         print("Tooltip 파싱 오류:", e)
         return 0, "-", "-", "-"
@@ -94,6 +77,11 @@ def character_info():
 @app.route("/equipment", methods=["GET"])
 def character_equipment():
     try:
+        profiles_data = res.json()
+        print("🧾 [정보 전체 응답 JSON] ↓↓↓")
+        import json
+        print(json.dumps(profiles_data, indent=2, ensure_ascii=False))
+        
         raw_query = request.args.get("name", "").strip()
         if not raw_query:
             return jsonify({"error": "❗닉네임을 입력해주세요."}), 400

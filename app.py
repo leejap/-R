@@ -17,15 +17,13 @@ headers = {
 #장비 툴팁 리로드
 def parse_tooltip_effects(tooltip_str):
     try:
-        tooltip = json.loads(tooltip_str)
-        
+        tooltip = json.loads(tooltip_str)        
         # 품질
         quality = 0
         element_001 = tooltip.get("Element_001", {})
         if isinstance(element_001.get("value"), dict):
             quality = int(element_001["value"].get("qualityValue", 0))
         
-
         # 상급 재련
         refine_text = tooltip.get("Element_005", {}).get("value", "")
         refine_match = re.search(r">(\d{1,2})<", refine_text)
@@ -131,7 +129,7 @@ def character_equipment():
             grade = item.get("Grade", "")
             part = item.get("Type", "")
             #아이템 품질/상급재련/엘릭서/초월 가져오기
-            tooltip_str = item.get("Tooltip", 0)
+            tooltip_str = item.get("Tooltip", "")
 
             quality, refine, elixir, transcend = parse_tooltip_effects(tooltip_str)
         

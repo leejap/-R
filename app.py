@@ -2,6 +2,8 @@ from flask import Flask, request, jsonify
 import os
 import requests
 from urllib.parse import quote
+import json
+import re
 
 app = Flask(__name__)
 
@@ -57,6 +59,12 @@ def character_info():
 
 
 @app.route("/equipment", methods=["GET"])
+def extract_quality_from_tooltip(tooltip_str):
+    try:
+        tooltip = json.loads(tooltip_str)
+        return tooltip.get("Element_001", {}).get("value", {}).get("qualityValue", 0)
+    except Exception:
+        return 0
 def character_equipment():
     try:
         raw_query = request.args.get("name", "").strip()
@@ -85,9 +93,14 @@ def character_equipment():
         count = 0
 
         for item in equip_data:
+            #아이템 고대랑 파츠 구분
             grade = item.get("Grade", "")
-            part = item.get("Type", "")            
-            qualityValue = item.get("Quality", 0)
+            part = item.get("Type", "")
+            #아이템 툴팁 부르기
+            
+            tooltip_str = item.get("Tooltip", "")
+            qualityValue = extract_quality_from_tooltip(tooltip_str)
+
             refine = item.get("TinkerLevel", "10단계")
             name = item.get("Name", "")
 

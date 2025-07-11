@@ -24,6 +24,7 @@ def parse_tooltip_effects(tooltip_str):
         element_001 = tooltip.get("Element_001", {})
         if isinstance(element_001.get("value"), dict):
             quality = int(element_001["value"].get("qualityValue", 0))
+        print(element_001)
         
         # 상급 재련
         refine_text = tooltip.get("Element_005", {}).get("value", "")
@@ -46,7 +47,7 @@ def parse_tooltip_effects(tooltip_str):
         return quality, refine, elixir, transcend
     except Exception as e:
         print("Tooltip 파싱 오류:", e)
-        print(element_001, 0)
+        
         return 0, "-", "-", "-"
 
 

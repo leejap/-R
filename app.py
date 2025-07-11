@@ -20,8 +20,8 @@ def parse_tooltip_effects(tooltip_str):
         tooltip = json.loads(tooltip_str)
 
         # 품질
-        quality = tooltip.get("Element_001", {}).get("value", {}).get("qualityValue", "")
-
+        quality = int(tooltip.get("Element_001", {}).get("value", {}).get("qualityValue", 0))
+        
         # 상급 재련
         refine_text = tooltip.get("Element_005", {}).get("value", "")
         refine_match = re.search(r">(\d{1,2})<", refine_text)
@@ -132,6 +132,9 @@ def character_equipment():
             message += f"[{grade} {part}] {name} / 품질 : {quality} / 상급재련 : {refine}\n"
             message += f" ⮡ 엘릭서: {elixir}\n"
             message += f" ⮡ 초월: {transcend}\n\n"
+
+            if part != "무기":
+                message += f"📦 엘릭서 : {elixir}\n"
 
 
             if part in["무기", "투구", "상의", "하의", "장갑", "어깨"]:

@@ -14,6 +14,37 @@ headers = {
     "authorization": f"bearer {LOSTARK_API_KEY}"
 }
 
+#장비 툴팁 리로드
+def parse_tooltip_effects(tooltip_str):
+    try:
+        tooltip = json.loads(tooltip_str)
+
+        # 품질
+        quality = tooltip.get("Element_001", {}).get("value", {}).get("qualityValue", 0)
+
+        # 상급 재련
+        refine_text = tooltip.get("Element_005", {}).get("value", "")
+        refine_match = re.search(r">(\d{1,2})<", refine_text)
+        refine = refine_match.group(1) + "단계" if refine_match else "-"
+
+        # 초월
+        transcend = tooltip.get("Element_010", {}).get("value", {}).get("Element_000", {}).get("topStr", "")
+        transcend = re.sub(r"<.*?>", "", transcend).strip() if transcend else "-"
+
+        # 엘릭서
+        elixir_block = tooltip.get("Element_011", {}).get("value", {}).get("Element_000", {}).get("contentStr", {})
+        elixirs = []
+        for val in elixir_block.values():
+            line = re.sub(r"<.*?>", "", val.get("contentStr", ""))
+            if line:
+                elixirs.append(line.strip())
+        elixir = " / ".join(elixirs) if elixirs else "-"
+
+        return quality, refine, elixir, transcend
+    except Exception as e:
+        print("Tooltip 파싱 오류:", e)
+        return 0, "-", "-", "-"
+
 
 @app.route("/character", methods=["GET"])
 def character_info():
@@ -58,19 +89,11 @@ def character_info():
 
 
 @app.route("/equipment", methods=["GET"])
-def extract_quality_from_tooltip(tooltip_str):
-    try:
-        tooltip = json.loads(tooltip_str)
-        return tooltip.get("Element_001", {}).get("value", {}).get("qualityValue", 0)
-    except Exception:
-        return 0
 def character_equipment():
     try:
-        
         raw_query = request.args.get("name", "").strip()
         if not raw_query:
             return jsonify({"error": "❗닉네임을 입력해주세요."}), 400
-        
 
         name = raw_query.replace("장비", "").strip()
         encoded_name = quote(name)
@@ -92,27 +115,27 @@ def character_equipment():
         message = f"[{name}]님에 대한 장비 정보\n\n"
         total_quality = 0
         count = 0
-        
 
         for item in equip_data:
             #아이템 고대랑 파츠 구분
             grade = item.get("Grade", "")
             part = item.get("Type", "")
-            #아이템 툴팁 부르기
-            
+            #아이템 품질/상급재련/엘릭서/초월 가져오기
             tooltip_str = item.get("Tooltip", "")
-            qualityValue = extract_quality_from_tooltip(tooltip_str)
 
-            refine = item.get("TinkerLevel", "10단계")
+            quality, refine, elixir, transcend = parse_tooltip_effects(tooltip_str)
+        
+            #장비 이름 가져오기
             name = item.get("Name", "")
-            
 
 
-            message += f"[{grade} {part}] {name} / 품질 : {qualityValue} / 상급재련 : {refine}\n"
+            message += f"[{grade} {part}] {name} / 품질 : {quality} / 상급재련 : {refine}\n"
+            message += f" ⮡ 엘릭서: {elixir}\n"
+            message += f" ⮡ 초월: {transcend}\n\n"
 
 
             if part in["무기", "투구", "상의", "하의", "장갑", "어깨"]:
-                total_quality += qualityValue
+                total_quality += quality
                 count += 1
 
         if count:

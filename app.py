@@ -124,7 +124,7 @@ def character_equipment():
             grade = item.get("Grade", "")
             part = item.get("Type", "")
             #아이템 품질/상급재련/엘릭서/초월 가져오기
-            tooltip_str = item.get("Tooltip", "")
+            tooltip_str = item.get("Tooltip", 0)
 
             quality, refine, elixir, transcend = parse_tooltip_effects(tooltip_str)
         

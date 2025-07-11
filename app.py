@@ -20,7 +20,7 @@ def parse_tooltip_effects(tooltip_str):
         tooltip = json.loads(tooltip_str)
 
         # 품질
-        quality = int(tooltip.get("Element_000", {}).get("value", {}).get("qualityValue", 0))
+        quality = int(tooltip.get("Element_001", {}).get("value", {}).get("qualityValue", 0))
         
         # 상급 재련
         refine_text = tooltip.get("Element_005", {}).get("value", "")
@@ -32,10 +32,10 @@ def parse_tooltip_effects(tooltip_str):
         transcend = re.sub(r"<.*?>", "", transcend).strip() if transcend else "-"
 
         # 엘릭서
-        elixirs = tooltip.get("Element_011", {}).get("value", {}).get("Element_000", {}).get("contentStr", {})
-        elixirs = re.sub(r"<.*?>", "", elixirs).strip() if elixirs else "-"
+        elixir = tooltip.get("Element_011", {}).get("value", {}).get("Element_000", {}).get("contentStr", {})
+        elixir = re.sub(r"<.*?>", "", elixir).strip() if elixir else "-"
 
-        return quality, refine, elixirs, transcend
+        return quality, refine, elixir, transcend
     except Exception as e:
         print("Tooltip 파싱 오류:", e)
         return 0, "-", "-", "-"

@@ -17,7 +17,8 @@ headers = {
 #장비 툴팁 리로드
 def parse_tooltip_effects(tooltip_str):
     try:
-        tooltip = json.loads(tooltip_str)        
+        tooltip = json.loads(tooltip_str)  
+              
         # 품질
         quality = 0
         element_001 = tooltip.get("Element_001", {})

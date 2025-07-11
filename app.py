@@ -130,8 +130,11 @@ def character_equipment():
 
 
             message += f"[{grade} {part}] {name} / 품질 : {quality} / 상급재련 : {refine}\n"
-            message += f" ⮡ 엘릭서: {elixir}\n"
-            message += f" ⮡ 초월: {transcend}\n\n"  
+            message += f" ⮡ 초월: {transcend}\n"
+            if part != "무기":
+                message += f" ⮡ 엘릭서: {elixir}\n\n"
+            
+            
            
                 
 

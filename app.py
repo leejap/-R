@@ -17,7 +17,7 @@ headers = {
 #장비 툴팁 리로드
 def parse_tooltip_effects(tooltip_str):
     try:
-        tooltip = json.loads(tooltip_str)  
+        tooltip = json.loads(tooltip_str)
 
         # 품질
         quality = 0
@@ -47,9 +47,8 @@ def parse_tooltip_effects(tooltip_str):
         elixir = " / ".join(elixirs) if elixirs else "-"
 
         return quality, refine, elixir, transcend
-    
     except Exception as e:
-        print("Tooltip 파싱 오류:", e)        
+        print("Tooltip 파싱 오류:", e)
         return 0, "-", "-", "-"
 
 
@@ -98,11 +97,6 @@ def character_info():
 @app.route("/equipment", methods=["GET"])
 def character_equipment():
     try:
-        profiles_data = res.json()
-        print("🧾 [정보 전체 응답 JSON] ↓↓↓")
-        import json
-        print(json.dumps(profiles_data, indent=2, ensure_ascii=False))
-        
         raw_query = request.args.get("name", "").strip()
         if not raw_query:
             return jsonify({"error": "❗닉네임을 입력해주세요."}), 400
@@ -133,7 +127,7 @@ def character_equipment():
             grade = item.get("Grade", "")
             part = item.get("Type", "")
             #아이템 품질/상급재련/엘릭서/초월 가져오기
-            tooltip_str = item.get("Tooltip", 0)
+            tooltip_str = item.get("Tooltip", "")
 
             quality, refine, elixir, transcend = parse_tooltip_effects(tooltip_str)
         

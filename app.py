@@ -18,7 +18,7 @@ headers = {
 def parse_tooltip_effects(tooltip_str):
     try:
         tooltip = json.loads(tooltip_str)
-        print(tooltip)
+        
         # 품질
         quality = 0
         element_001 = tooltip.get("Element_001", {})

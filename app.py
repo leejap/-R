@@ -46,7 +46,7 @@ def parse_tooltip_effects(tooltip_str):
         return quality, refine, elixir, transcend
     except Exception as e:
         print("Tooltip 파싱 오류:", e)
-        print(element_001, "")
+        print(element_001, 0)
         return 0, "-", "-", "-"
 
 

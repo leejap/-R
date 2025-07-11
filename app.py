@@ -20,7 +20,7 @@ def parse_tooltip_effects(tooltip_str):
         tooltip = json.loads(tooltip_str)
 
         # 품질
-        quality = tooltip.get("Element_001", {}).get("value", {}).get("qualityValue", 0)
+        quality = tooltip.get("Element_001", {}).get("value", {}).get("qualityValue", "")
 
         # 상급 재련
         refine_text = tooltip.get("Element_005", {}).get("value", "")

@@ -22,12 +22,8 @@ def parse_tooltip_effects(tooltip_str):
         # 품질
         quality = 0
         element_001 = tooltip.get("Element_001", {})
-        value = element_001.get("qualityValue", {})
-        if isinstance(value, str):
-            value = json.loads(value)
-        if isinstance(value, dict):
-            quality = int(value.get("qualityValue", 0))
-
+        if isinstance(element_001.get("value"), dict):
+            quality = int(element_001["value"].get("qualityValue", 0))
         
         # 상급 재련
         refine_text = tooltip.get("Element_005", {}).get("value", "")

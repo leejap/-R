@@ -99,14 +99,16 @@ def character_equipment():
             grade = item.get("Grade", "")
             part = item.get("Type", "")
             #아이템 툴팁 부르기
-            quality = item.get("qualityValue", 0)
-            tooltip_str = item.get("Tooltip", "")         
+            
+            tooltip_str = item.get("Tooltip", "")
+            qualityValue = extract_quality_from_tooltip(tooltip_str)
+                   
             refine = item.get("TinkerLevel", "10단계")
             name = item.get("Name", "")
             
 
 
-            message += f"[{grade} {part}] {name} / 품질 : {quality} / 상급재련 : {refine}\n"
+            message += f"[{grade} {part}] {name} / 품질 : {qualityValue} / 상급재련 : {refine}\n"
 
 
             if part in["무기", "투구", "상의", "하의", "장갑", "어깨"]:

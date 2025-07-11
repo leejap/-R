@@ -102,7 +102,7 @@ def character_equipment():
             
             tooltip_str = item.get("Tooltip", "")
             qualityValue = extract_quality_from_tooltip(tooltip_str)
-                   
+
             refine = item.get("TinkerLevel", "10단계")
             name = item.get("Name", "")
             
@@ -112,7 +112,7 @@ def character_equipment():
 
 
             if part in["무기", "투구", "상의", "하의", "장갑", "어깨"]:
-                total_quality += quality
+                total_quality += qualityValue
                 count += 1
 
         if count:

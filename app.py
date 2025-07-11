@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
-import os
-import requests
+import os, re
+import requests, json
 from urllib.parse import quote
 
 
@@ -58,11 +58,19 @@ def character_info():
 
 
 @app.route("/equipment", methods=["GET"])
+def extract_quality_from_tooltip(tooltip_str):
+    try:
+        tooltip = json.loads(tooltip_str)
+        return tooltip.get("Element_001", {}).get("value", {}).get("qualityValue", 0)
+    except Exception:
+        return 0
 def character_equipment():
     try:
+        
         raw_query = request.args.get("name", "").strip()
         if not raw_query:
             return jsonify({"error": "❗닉네임을 입력해주세요."}), 400
+        
 
         name = raw_query.replace("장비", "").strip()
         encoded_name = quote(name)
@@ -84,6 +92,7 @@ def character_equipment():
         message = f"[{name}]님에 대한 장비 정보\n\n"
         total_quality = 0
         count = 0
+        
 
         for item in equip_data:
             #아이템 고대랑 파츠 구분
@@ -91,9 +100,10 @@ def character_equipment():
             part = item.get("Type", "")
             #아이템 툴팁 부르기
             quality = item.get("qualityValue", 0)
-        
+            tooltip_str = item.get("Tooltip", "")         
             refine = item.get("TinkerLevel", "10단계")
             name = item.get("Name", "")
+            
 
 
             message += f"[{grade} {part}] {name} / 품질 : {quality} / 상급재련 : {refine}\n"
